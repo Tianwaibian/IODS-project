@@ -1,41 +1,11 @@
-Weekly schedule and deadlines
-Please study this schedule carefully! As you can see, you will always have about one weekfor completing each exercise (DataCamp exercises that are automatically graded and RStudio exercises that are graded using peer-review). 
-Deadlines are strict: late submissions cannot be accepted.
-Week 1
-???	Tue 31 Oct (14:15) Class 1
-Week 2
-???	Mon 6 Nov (23:55) DataCamp deadline (R Short and Sweet)
-???	Tue 7 Nov (14:15) Class 2
-???	Wed 8 Nov (23:55) RStudio exercise 1 submission deadline
-???	Thu 9 Nov (00:00) RStudio exercise 1 peer-review begins
-Week 3
-???	Mon 13 Nov (23:55) DataCamp deadline (Chapter 1)
-???	Mon 13 Nov (23:55) RStudio exercise 1 peer-review deadline
-???	Tue 14 Nov (14:15) Class 3
-???	Wed 15 Nov (23:55) RStudio exercise 2 submission deadline
-???	Thu 16 Nov (00:00) RStudio exercise 2 peer-review begins
-Week 4
-???	Mon 20 Nov (23:55) DataCamp deadline (Chapter 2)
-???	Mon 20 Nov (23:55) RStudio exercise 2 peer-review deadline
-???	Tue 21 Nov (14:15) Class 4
-???	Wed 22 Nov (23:55) RStudio exercise 3 submission deadline
-???	Thu 23 Nov (00:00) RStudio exercise 3 peer-review begins
-Week 5
-???	Mon 27 Nov (23:55) DataCamp deadline (Chapter 3)
-???	Mon 27 Nov (23:55) RStudio exercise 3 peer-review deadline
-???	Tue 28 Nov (14:15) Class 5
-???	Wed 29 Nov (23:55) RStudio exercise 4 submission deadline
-???	Thu 30 Nov (00:00) RStudio exercise 4 peer-review begins
-Week 6
-???	Mon 4 Dec (23:55) DataCamp deadline (Chapter 4)
-???	Mon 4 Dec (23:55) RStudio exercise 4 peer-review deadline
-???	Tue 5 Dec (14:15) Class 6
-???	Wed 6 Dec (23:55) RStudio exercise 5 submission deadline
-???	Thu 7 Dec (00:00) RStudio exercise 5 peer-review begins
-Week 7
-???	Mon 11 Dec (23:55) RStudio exercise 5 peer-review deadline
-???	Tue 12 Dec (14:15) Class 7
-Week 8 (the "exam week")
-???	Mon 18 Dec (23:55) Final assignment deadline
+The name of this course refers to THREE BIG THEMES: 1) Open Data, 2) Open Science, and 3) Data Science. These themes are summarized briefly as follows:
+1) Open Data
+There are more and more open data sets available. Utilizing and sharing data is an essential skill for researchers in all fields. During this course we use open data sets from different sources and learn to prepare them for different analyses. You will explore, analyse and interpret data from real world applications.
+2) Open Science
+Science thrives to be open. Repeating or reproducing the results is a common aim in any branch of science, but it is not always easy or simple. Sharing data is not enough for reproducibility. What is also needed, is using openly available software tools and methods as well as sharing your code and results. You will learn these skills during this course, using state-of-the-art tools.
+3) Data Science
+Data Science is the name for the data driven world of Statistics. Nowadays, finding or collecting data is not a problem. Instead, the challenges are in extracting knowledge and discovering the patterns behind the data. It requires skills of coding, programming, and modelling, as well as visualizing and analysing. You will face all these topics on this course.
+We are quite excited about this course! So come along! Together we’ll guide you through these themes.
+Welcome to the course! :)
 
- My GitHub repisitory link is https://github.com/Tianwaibian/IODS-project.
+ My GitHub repisitory link is  https://tianwaibian.github.io/IODS-project/.
