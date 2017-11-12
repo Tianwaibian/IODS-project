@@ -1,0 +1,41 @@
+Weekly schedule and deadlines
+Please study this schedule carefully! As you can see, you will always have about one weekfor completing each exercise (DataCamp exercises that are automatically graded and RStudio exercises that are graded using peer-review). 
+Deadlines are strict: late submissions cannot be accepted.
+Week 1
+???	Tue 31 Oct (14:15) Class 1
+Week 2
+???	Mon 6 Nov (23:55) DataCamp deadline (R Short and Sweet)
+???	Tue 7 Nov (14:15) Class 2
+???	Wed 8 Nov (23:55) RStudio exercise 1 submission deadline
+???	Thu 9 Nov (00:00) RStudio exercise 1 peer-review begins
+Week 3
+???	Mon 13 Nov (23:55) DataCamp deadline (Chapter 1)
+???	Mon 13 Nov (23:55) RStudio exercise 1 peer-review deadline
+???	Tue 14 Nov (14:15) Class 3
+???	Wed 15 Nov (23:55) RStudio exercise 2 submission deadline
+???	Thu 16 Nov (00:00) RStudio exercise 2 peer-review begins
+Week 4
+???	Mon 20 Nov (23:55) DataCamp deadline (Chapter 2)
+???	Mon 20 Nov (23:55) RStudio exercise 2 peer-review deadline
+???	Tue 21 Nov (14:15) Class 4
+???	Wed 22 Nov (23:55) RStudio exercise 3 submission deadline
+???	Thu 23 Nov (00:00) RStudio exercise 3 peer-review begins
+Week 5
+???	Mon 27 Nov (23:55) DataCamp deadline (Chapter 3)
+???	Mon 27 Nov (23:55) RStudio exercise 3 peer-review deadline
+???	Tue 28 Nov (14:15) Class 5
+???	Wed 29 Nov (23:55) RStudio exercise 4 submission deadline
+???	Thu 30 Nov (00:00) RStudio exercise 4 peer-review begins
+Week 6
+???	Mon 4 Dec (23:55) DataCamp deadline (Chapter 4)
+???	Mon 4 Dec (23:55) RStudio exercise 4 peer-review deadline
+???	Tue 5 Dec (14:15) Class 6
+???	Wed 6 Dec (23:55) RStudio exercise 5 submission deadline
+???	Thu 7 Dec (00:00) RStudio exercise 5 peer-review begins
+Week 7
+???	Mon 11 Dec (23:55) RStudio exercise 5 peer-review deadline
+???	Tue 12 Dec (14:15) Class 7
+Week 8 (the "exam week")
+???	Mon 18 Dec (23:55) Final assignment deadline
+
+ My GitHub repisitory link is https://github.com/Tianwaibian/IODS-project.
