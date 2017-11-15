@@ -4,6 +4,7 @@
 #'
 #'The script for Rtudio Exercise 2
 #'
+setwd('D:/github/IODS-project/data')
 data_url <- "http://www.helsinki.fi/~kvehkala/JYTmooc/JYTOPKYS3-data.txt" 
 lrn14 <- read.table(data_url, sep = '\t', header = TRUE)
 #' look at the structure of data
@@ -25,7 +26,6 @@ lrn14$surf <- rowMeans(surface_columns)
 #'select the columns related to strategic learning  and create column 'stra' by averageings
 strategic_columns <-  select(lrn14, one_of(strategic_questions))
 lrn14$stra <- rowMeans(strategic_columns)
-library(dplyr)
 #'choose a handful of columns to keep 
 keep_columns <- c('gender', 'Age', 'Attitude', 'deep', 'stra', 'surf', 'Points')
 #'select the 'keep_columns' to create a new dataset
@@ -42,4 +42,4 @@ learning2014 <- filter(learning2014, points > 0)
 str(learning2014)
 #'save datafile
 write.table(learning2014,file='learning2014.txt',row.names=F,sep = '\t')
-write.table(learning2014, file = 'learning2014.txt', row.names = F,sep = '\t')
+
