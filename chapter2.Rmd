@@ -1,7 +1,71 @@
-# Insert chapter 2 title here
+created at 13:30 15.11.2017
+@author:Zilan Wen
 
-*Describe the work you have done this week and summarize your learning.*
+#Regression and modell validation in Rtudio - Data Analysis
+#1.Read the students2014 data
+*read 'learning2014.txt' from url. Create an object named "data_url" by "<-".*
 
-- Describe your work and results clearly. 
-- Assume the reader has an introductory course level understanding of writing and reading R code as well as statistical methods
-- Assume the reader has no previous knowledge of your data or the more advanced methods you are using  
+data_url <- "http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/learning2014.txt"
+
+*Create a new object named "lrn2014"*
+
+lrn2014 <- read.table(data_url, sep = ',', header = TRUE) 
+
+str(lrn2014)
+
+dim(lrn2014)
+
+*The data is in R's data.frame format. The data frame of lrn2014 has 166 observations and 7 variables(gender, age, attitude, deep, stra, surf, points)*
+
+library(dplyr)
+
+library(GGally)
+
+library(ggplot2)
+
+install.packages("GGally")
+
+*Explore the structure and the dimensions of the data*
+
+p <- ggpairs(learning2014, mapping = aes(col=gender,alpha=0.3))
+
+p
+
+summary(learning2014)
+
+#2. Show a graphical overview of the data
+
+The figure shows the relationship among different variables. Totally there are 166 subjects including 110 females
+and 56 males. 7 variables include age, attitude, deep combined with deep questions, stra with strategiic questions, surf with surface questions, points. Most subjects are at the age of 20-30. The points of attitude and deep questions  for male subjects are higher than that of female. But the points of  strategic and surface quenstions for female subjects are higher than that of males. However there is little difference of the overall points between genders. The variable of points has a relatively close relationship with attitude, with correlation value 0.437.  
+
+#3. Multiple regression
+*create a regression model with three explanatory variables targeted points*
+
+model1 <- lm(points ~ attitude + stra + surf, data = learning2014)
+
+summary(model1)
+
+
+The target variable point is fitted to three explanatory variables: attitude, stra and surf. According to
+the results of the model, surf does not have a statistically significant relationship with the target variable.
+So, surf is removed from the fitting model and points is modelled according to attitude and stra again.
+
+*remove variable surf and remodel*
+
+model2 <- lm(points ~ attitude + stra, data = learning2014)
+
+#4. Interpret fitted model
+
+summary(model2)
+
+In Model2, 'points' is the target and both 'attitude'and 'stra' are   the explanatory variables. The formula is  points=8.9729+3.4658*attitude+0.9137*stra. We could expect an average points of 8.9729 for all gender subjects with no any points in attitude and strategis question. If stra remains constant, points will differ by 3.4658 unit on average when attitude differed by 1 unit.Similarly, points will change 0.9137 unit when sta differed by one unit if attitude keeps constant. The regression modle account for 20.48% of the variance. Since the points can be affected by other factors apart from attitude and sta, so the multiple R-squared value is lower than 50%. However, we have statistically a significant predictor in attitude, we can still use the formula for prediction. 
+
+#5. Diagnostic plots
+
+par(mfrow=c(2,2))
+
+plot(model2, which=c(1,2,5))
+
+The Residuals vs Fitted values plot examines if the errors have constant variance. The graph shows a reasonable constant variance without any pattern.
+The Normal QQ-polt checks if the errors are normally distributed. We see from the graph a very good linear model fit, indicating a normally distributed error set.
+The Residuals vs Leverage confirms if there are any outliers with high leverage. From the graph, it shows that all the leverage are below 0.06, indicating good model fitting.

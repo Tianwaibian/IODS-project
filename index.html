@@ -143,7 +143,12 @@ $(document).ready(function () {
 <div id="TOC">
 <ul>
 <li><a href="#about-the-project">About the project</a></li>
-<li><a href="#insert-chapter-2-title-here">Insert chapter 2 title here</a></li>
+<li><a href="#regression-and-modell-validation-in-rtudio---data-analysis">Regression and modell validation in Rtudio - Data Analysis</a></li>
+<li><a href="#read-the-students2014-data">1.Read the students2014 data</a></li>
+<li><a href="#show-a-graphical-overview-of-the-data">2. Show a graphical overview of the data</a></li>
+<li><a href="#multiple-regression">3. Multiple regression</a></li>
+<li><a href="#interpret-fitted-model">4. Interpret fitted model</a></li>
+<li><a href="#diagnostic-plots">5. Diagnostic plots</a></li>
 </ul>
 </div>
 
@@ -153,15 +158,52 @@ $(document).ready(function () {
 <p>*Write a short description about the course and add a link to your github repository here.This is an R markdown (.Rmd) file so you can use R markdown syntax. See the ‘Useful links’ page in the mooc area (chapter 1) for instruction.<br />
 Three themes of this course are open data, open science and data science. I heard that R programme is a wonderful tool for data analysis. Hopefully I can analyze my data with R. I’m Zilan Wen. My GitHub repisitory link is <a href="https://github.com/Tianwaibian/IODS-project" class="uri">https://github.com/Tianwaibian/IODS-project</a>.</p>
 <hr />
+<p>created at 13:30 15.11.2017 <span class="citation">@author:Zilan</span> Wen</p>
 </div>
-<div id="insert-chapter-2-title-here" class="section level1">
-<h1>Insert chapter 2 title here</h1>
-<p><em>Describe the work you have done this week and summarize your learning.</em></p>
-<ul>
-<li>Describe your work and results clearly.</li>
-<li>Assume the reader has an introductory course level understanding of writing and reading R code as well as statistical methods</li>
-<li>Assume the reader has no previous knowledge of your data or the more advanced methods you are using</li>
-</ul>
+<div id="regression-and-modell-validation-in-rtudio---data-analysis" class="section level1">
+<h1>Regression and modell validation in Rtudio - Data Analysis</h1>
+</div>
+<div id="read-the-students2014-data" class="section level1">
+<h1>1.Read the students2014 data</h1>
+<p><em>read ‘learning2014.txt’ from url. Create an object named “data_url” by “&lt;-”.</em></p>
+<p>data_url &lt;- “<a href="http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/learning2014.txt" class="uri">http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/learning2014.txt</a>”</p>
+<p><em>Create a new object named “lrn2014”</em></p>
+<p>lrn2014 &lt;- read.table(data_url, sep = ‘,’, header = TRUE)</p>
+<p>str(lrn2014)</p>
+<p>dim(lrn2014)</p>
+<p><em>The data is in R’s data.frame format. The data frame of lrn2014 has 166 observations and 7 variables(gender, age, attitude, deep, stra, surf, points)</em></p>
+<p>library(dplyr)</p>
+<p>library(GGally)</p>
+<p>library(ggplot2)</p>
+<p>install.packages(“GGally”)</p>
+<p><em>Explore the structure and the dimensions of the data</em></p>
+<p>p &lt;- ggpairs(learning2014, mapping = aes(col=gender,alpha=0.3))</p>
+<p>p</p>
+<p>summary(learning2014)</p>
+</div>
+<div id="show-a-graphical-overview-of-the-data" class="section level1">
+<h1>2. Show a graphical overview of the data</h1>
+<p>The figure shows the relationship among different variables. Totally there are 166 subjects including 110 females and 56 males. 7 variables include age, attitude, deep combined with deep questions, stra with strategiic questions, surf with surface questions, points. Most subjects are at the age of 20-30. The points of attitude and deep questions for male subjects are higher than that of female. But the points of strategic and surface quenstions for female subjects are higher than that of males. However there is little difference of the overall points between genders. The variable of points has a relatively close relationship with attitude, with correlation value 0.437.</p>
+</div>
+<div id="multiple-regression" class="section level1">
+<h1>3. Multiple regression</h1>
+<p><em>create a regression model with three explanatory variables targeted points</em></p>
+<p>model1 &lt;- lm(points ~ attitude + stra + surf, data = learning2014)</p>
+<p>summary(model1)</p>
+<p>The target variable point is fitted to three explanatory variables: attitude, stra and surf. According to the results of the model, surf does not have a statistically significant relationship with the target variable. So, surf is removed from the fitting model and points is modelled according to attitude and stra again.</p>
+<p><em>remove variable surf and remodel</em></p>
+<p>model2 &lt;- lm(points ~ attitude + stra, data = learning2014)</p>
+</div>
+<div id="interpret-fitted-model" class="section level1">
+<h1>4. Interpret fitted model</h1>
+<p>summary(model2)</p>
+<p>In Model2, ‘points’ is the target and both ‘attitude’and ’stra’ are the explanatory variables. The formula is points=8.9729+3.4658<em>attitude+0.9137</em>stra. We could expect an average points of 8.9729 for all gender subjects with no any points in attitude and strategis question. If stra remains constant, points will differ by 3.4658 unit on average when attitude differed by 1 unit.Similarly, points will change 0.9137 unit when sta differed by one unit if attitude keeps constant. The regression modle account for 20.48% of the variance. Since the points can be affected by other factors apart from attitude and sta, so the multiple R-squared value is lower than 50%. However, we have statistically a significant predictor in attitude, we can still use the formula for prediction.</p>
+</div>
+<div id="diagnostic-plots" class="section level1">
+<h1>5. Diagnostic plots</h1>
+<p>par(mfrow=c(2,2))</p>
+<p>plot(model2, which=c(1,2,5))</p>
+<p>The Residuals vs Fitted values plot examines if the errors have constant variance. The graph shows a reasonable constant variance without any pattern. The Normal QQ-polt checks if the errors are normally distributed. We see from the graph a very good linear model fit, indicating a normally distributed error set. The Residuals vs Leverage confirms if there are any outliers with high leverage. From the graph, it shows that all the leverage are below 0.06, indicating good model fitting.</p>
 <hr />
 </div>
 
