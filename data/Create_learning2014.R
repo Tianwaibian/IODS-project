@@ -3,7 +3,7 @@
 #'@author:Zilan Wen
 #'
 #'The script for Rtudio Exercise 2
-#'
+#'Data wrangling
 setwd('D:/github/IODS-project/data')
 data_url <- "http://www.helsinki.fi/~kvehkala/JYTmooc/JYTOPKYS3-data.txt" 
 lrn14 <- read.table(data_url, sep = '\t', header = TRUE)
@@ -43,3 +43,4 @@ str(learning2014)
 #'save datafile
 write.table(learning2014,file='learning2014.txt',row.names=F,sep = '\t')
 
+# Data Analysis

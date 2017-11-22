@@ -1,0 +1,149 @@
+---
+# Data analysis for logistic regression
+## 1. create a new RMarkdown file and save it as an empty file named 'chapter3.Rmd'
+title: "Chapter3.Rmd"
+output: html_document
+   
+```{R}
+getwd()
+setwd('D:/github/IODS-project/data')
+```
+## 2. Read the joined student alcohol consumption data i
+```{R}
+library(readr)
+alc <- read_csv("alc.txt")
+```
+*Print out the names of the variables in the data
+```{R}
+colnames(alc)
+```
+  the data set *alc.txt* used in the analysis 
+combines two data sets regarding the performance in two distinct subjects: Mathematics (mat) and Portuguese language (por).  
+*The variables not used for joining the two data have been combined by averaging (including the grade variables).
+*'alc_use' is the average of 'Dalc' and 'Walc'
+*'high_use' is TRUE if 'alc_use' is higher than 2 and FALSE otherwise.
+
+## 3. Choose 4 interesting variables in the data and for each of them, present your personal hypothesis about their relationships with alcohol consumption
+
+* 4 variables I guess to be interesting are age, studytime, goout and final grade G3.
+I personally think that:  
+*
+(1) The older students are more likely to high use alcohol than the younger.
+(2) The more weekly study time, less high use alcohol.
+(3) Students with higher final grades are less likely to high use alcohol.
+(4) Students frequently going out with friends are more likely to high use alcohol.
+
+## 4  Relationships of the varibles I selected with alcohol consumption
+
+```{R}
+library(ggplot2)
+g1 <- ggplot(alc, aes(x = high_use, y = age))
+g1 + geom_boxplot() + ylab("year-old")
+g2 <- ggplot(alc, aes(x = high_use, y = studytime))
+g2 + geom_boxplot() + ylab("hours")
+g3 <- ggplot(alc, aes(x = high_use, y = G3))
+g3 + geom_boxplot() + ylab("grades")
+g4 <- ggplot(alc, aes(x = high_use, y = goout))
+g4 + geom_boxplot() + ylab("grades")
+```
+  From the box plots, I find that:
+    (1) students at the age of 16 are likely to low use accohol and students at the age of 17 are more likely to high use alcohol.But the relationship between age and alcohol consumption isn't clear since there is a overlap distribution for age varible.
+    (2) students who spend more than 2 hours on study every week are less likely to high use alcohol than students with less than 2-hour study time weekly.
+    (3) It is hard to get the relationship between G3 and high use alcohol.
+    (4) The students going out with friends frequently are more likely to high use alcohol.
+## 5. Use logistic regression
+* find the model with glm()
+
+```{R}
+m <- glm(high_use ~ age + studytime + G3 + goout, data = alc, family = "binomial")
+summary(m)
+```
+According to the m modle, The coefficients of age and G3 have no significant difference, so it may reveals that age and G3 have no significant correction with high use alcohol. To check if the model can be improved without the varibles age and G3, another model named m1 is built and conduct a likelihood radio test.
+* fit another model named m1 without age and G3
+```{R}
+m1 <- glm(high_use ~ studytime + goout, data = alc, family = "binomial")
+summary(m1)
+```
+* conduct a likelihood radio test
+```{R}
+anova(m, m1, test="LRT")
+```
+* The likelihood ratio test is not significant and we would conclude that the variable age and G3 should be away in the model.
+* compute odds ratios (OR)
+```{R}
+library(dplyr)
+OR <- coef(m1) %>% exp
+```
+* compute confidence intervals (CI)
+```{R}
+CI <- confint(m1) %>% exp
+```
+* print out the odds ratios with their confidence intervals
+```{R}
+cbind(OR, CI)
+```
+* According to the odds radios of studytime and goout, it can reveal that:
+  (1) Studytime associates with less probability of high use of alcohol because OR (studytime) < 1 which is related to low odds.
+  (2) Goout is responsible for high probability of high use of alcohol because OR(goout) > 1.
+  (3) my previously hypothesis about the relationships of these two variables with high use of alcohol is right.
+  
+## 6. Explore the predictive power of you model
+* predict() the probability of high_use
+```{R}
+probabilities <- predict(m1, type = "response")
+```
+* add the predicted probabilities to 'alc'
+```{R}
+alc <- mutate(alc, probability = probabilities)
+```
+
+* use the probabilities to make a prediction of high_use
+```{R}
+alc <- mutate(alc, prediction = probability > 0.5)
+```
+
+* see the last ten original classes, predicted probabilities, and class predictions
+```{R}
+select(alc, studytime, goout, high_use, probability, prediction) %>% tail(10)
+```
+
+* tabulate the target variable versus the predictions
+```{R}
+table(high_use = alc$high_use, prediction = alc$prediction)
+```
+* initialize a plot of 'high_use' versus 'probability' in 'alc'
+```{R}
+g <- ggplot(alc, aes(x = probability, y =high_use, col=prediction))
+```
+* define the geom as points and draw the plot
+```{R}
+g + geom_point()
+```
+* tabulate the target variable versus the predictions
+```{R}
+table(high_use = alc$high_use, prediction = alc$prediction) %>% prop.table %>% addmargins 
+```
+* define a loss function (average prediction error)
+```{R}
+loss_func <- function(class, prob) {
+  n_wrong <- abs(class - prob) > 0.5
+  mean(n_wrong)
+}
+```
+
+*  call loss_func to compute the average number of wrong predictions in the (training) data
+
+```{R}
+ loss_func(class = alc$high_use, prob = alc$probability)
+```
+
+*  It reveals that 24.6% of prediction are  incorrect.
+
+* New observations
+```{R}
+new_studytime <- c(2, 3, 4)
+new_goout <- c(2, 3, 4)
+new_data <- data.frame(studytime = new_studytime, goout = new_goout)
+new_data
+predict(m1, newdata = new_data)
+```
