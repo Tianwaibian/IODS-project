@@ -1,0 +1,315 @@
+created at 19:30 29.11.2017
+@author:Zilan Wen
+
+# Chapter 4  Clustering and classification--Analysis exercises
+## 1.Create a new RMarkdown
+title: "chapter4.Rmd"
+output: html_document
+
+## 2.Load the Boston data
+
+* Load the Boston data from the MASS package
+```{r}
+library(MASS)
+data("Boston")
+```
+
+## 3. Explore the structure and the dimensions of the data
+
+```{r}
+str(Boston)
+dim(Boston)
+```
+
+The Boston data is about housing value in suburbs of Boston. 14 Variables used to assess housing value are as following:
+
+crim per capita crime rate by town.  
+zn proportion of residential land zoned for lots over 25,000 sq.ft.      
+indus   proportion of non-retail business acres per town.   
+chas    Charles River dummy variable (= 1 if tract bounds river; 0 otherwise).  
+nox     nitrogen oxides concentration (parts per 10 million).    
+rm      average number of rooms per dwelling.    
+age     proportion of owner-occupied units built prior to 1940.    
+dis     weighted mean of distances to five Boston employment centres.    
+rad     index of accessibility to radial highways.  
+tax     full-value property-tax rate per \$10,000.   
+ptratio pupil-teacher ratio by town.   
+black    1000(Bk ??? 0.63)2 where Bk is the proportion of blacks by town.  
+lstat    lower status of the population (percent).  
+medv     median value of owner-occupied homes in \$1000s  
+
+
+* Overview of the data
+* plot matrix of the variables
+```{r}
+summary(Boston)
+pairs(Boston[8:10])
+```
+* calculate the correlation matrix and round it
+
+```{r}
+library(tidyr)
+cor_matrix<-cor(Boston) %>% round(2)
+cor_matrix
+```
+
+
+*  visualize the correlation matrix
+
+```{r}
+
+library(corrplot)
+corrplot(cor_matrix, method="circle", type = 'upper', cl.pos ="b", tl.pos = 'd', tl.cex = 0.6)
+```
+
+From the graphy, we can see that:
+1. crim is positively related to rad and tax,(0.63 & 0.58).
+2. zn is positive correlated with dis, which means that more proportion of residential land could be reached wth more distances to Boston centres.
+3. the proportion of  non-retail business acres per town positively affects nitrogen oxides concentration and tax, but has a negative correlation with distance.
+4. Chas seems to have no relationship with others.
+5. Age is negatively related to dis,  which reveals the proportion of owner-occupied units built prior to 1940 becomes downwards with increasing distance.
+6. Tax  has a positive relationship with rad.
+
+
+## 4. Standardize the dataset and print out summaries of the scaled data.
+
+* center and standardize variables
+
+```{r}
+boston_scaled <- scale(Boston)
+```
+
+* summaries of the scaled variables
+
+```{r}
+summary(boston_scaled) 
+```
+
+The means of all variables become zero.
+
+* class of the boston_scaled object
+
+```{r}
+class(boston_scaled)
+```
+
+* change the object to data frame
+
+```{r}
+boston_scaled <- as.data.frame(boston_scaled)
+summary(boston_scaled) 
+```
+
+* Create a categorical variable of the crime rate in the Boston dataset (from the scaled crime rate).
+
+*  summary of the scaled crime rate
+
+```{r}
+summary(boston_scaled$crim) 
+```
+
+* create a quantile vector of crim and print it
+
+```{r}
+bins <- quantile(boston_scaled$crim) %>% round(4)
+bins
+getwd()
+setwd('D:/github/IODS-project')
+```
+* create a categorical variable 'crime'
+
+```{r}
+crime <- cut(boston_scaled$crim, breaks = bins, include.lowest = TRUE, label = c('low', 'med_low', 'med_high', 'high'))
+table(crime)
+boston_scaled <- dplyr::select(boston_scaled, -crim)
+boston_scaled <- data.frame(boston_scaled, crime)
+
+```
+* Splitting the original data to test and train sets
+
+* number of rows in the Boston dataset 
+
+```{r}
+n <- nrow(boston_scaled)
+n
+```
+
+* choose randomly 80% of the rows and save the row numbers to ind
+
+```{r}
+ind <- sample(n,  size = n * 0.8)
+```
+
+*  create train set
+
+```{r}
+train <- boston_scaled[ind,]
+```
+
+
+## 5.  linear discriminant analysis
+
+* linear discriminant analysis on the train set
+
+```{r}
+lda.fit <- lda(crime ~ ., data = train)
+lda.fit
+```
+
+*  the function for lda biplot arrows
+
+```{r}
+lda.arrows <- function(x, myscale = 1, arrow_heads = 0.1, color = "red", tex = 0.75, choices = c(1,2)){
+  heads <- coef(x)
+  arrows(x0 = 0, y0 = 0, 
+         x1 = myscale * heads[,choices[1]], 
+         y1 = myscale * heads[,choices[2]], col=color, length = arrow_heads)
+  text(myscale * heads[,choices], labels = row.names(heads), 
+       cex = tex, col=color, pos=3)
+}
+lda.arrows
+```
+
+* target classes as numeric
+
+```{r}
+classes <- as.numeric(train$crime)
+```
+
+* plot the lda results
+
+```{r}
+plot(lda.fit, dimen = 2, col = classes, pch = classes)
+lda.arrows(lda.fit, myscale = 1)
+```
+
+
+## 6. Save the crime categories from the test set
+* create test set 
+
+```{r}
+test <- boston_scaled[-ind,]
+```
+* save the correct classes from test data
+
+```{r}
+correct_classes <- test$crime
+```
+
+* Remove the categorical crime variable from the test dataset  
+  
+```{r}
+test <- dplyr::select(test, -crime)
+```
+
+* Predict classes with test data
+
+```{r}
+lda.pred <- predict(lda.fit, newdata = test)
+```
+
+* Cross tabulate the results
+
+```{r}
+table(correct = correct_classes, predicted = lda.pred$class)
+```
+Totally, there are 102 observations in the test set, with 26, 24, 24, 28 cases belonging to low, med-low, med-hihg, high crime rate,respectively. Based on the LDA model, 73.53% prediction are reliable and the accuracy rises up with higher leval crime rate.
+
+## 7. Determin the K by K-means
+
+* Reload the Boston dataset and standardize the dataset
+
+```{r}
+data('Boston')
+```
+
+* center and standardize variables
+
+```{r}
+boston_scaled <- scale(Boston)
+```
+
+* summaries of the scaled variables
+
+```{r}
+summary(boston_scaled) 
+```
+ 
+* manhattan distance matrix
+
+```{r}
+dist_man <- dist(boston_scaled, method = "manhattan" ) 
+summary(dist_man)
+```
+
+* Run k-means algorithm on the dataset.
+```{r}
+km <-kmeans(boston_scaled, centers = 3)
+```
+
+* plot the Boston scaled dataset with clusters
+```{r}
+pairs(boston_scaled, col = km$cluster)
+```
+
+```{r}
+library(ggplot2)
+set.seed(123)
+```
+
+* determine the number of clusters
+```{r}
+k_max <- 10
+```
+
+* calculate the total within sum of squares avd visualize the results
+
+```{r}
+
+twcss <- sapply(1:k_max, function(k){kmeans(boston_scaled, k)$tot.withinss})
+qplot(x = 1:k_max, y = twcss, geom = 'line')
+```
+
+Suggested number of cluster: 2
+* k-means clustering and plot the boston scaled dataset with clusters
+```{r}
+km <-kmeans(boston_scaled, centers = 2)
+pairs(boston_scaled, col = km$cluster)
+```
+ 
+ 
+The plot shows that the k-means method could classify the results quite well for most of the variables. The red group and black group are divided obviously in variables including indus, nox, rm, rad, tax, black, lstat, medv. 
+
+## Additional question
+
+Perform k-means on the original Boston data with some reasonable number of clusters (> 2). Remember to standardize the dataset. Then perform LDA using the clusters as target classes. Include all the variables in the Boston data in the LDA model. Visualize the results with a biplot (include arrows representing the relationships of the original variables to the LDA solution). Interpret the results. Which variables are the most influencial linear separators for the clusters?
+
+* use the standardized the dataset 'boston_scaled' to perform k-means. The number of cluster is 4
+
+```{r}
+data('Boston')
+boston_scaled <- scale(Boston)
+fit <-kmeans(boston_scaled, 4)
+
+```
+* get cluster means 
+
+```{r}
+aggregate(boston_scaled,by=list(fit$cluster),FUN=mean)
+```
+
+* get cluster means 
+
+```{r}
+aggregate(boston_scaled,by=list(fit$cluster),FUN=mean)
+```
+
+*append cluster assignment
+
+```{r}
+boston_scaled_1 <- data.frame(boston_scaled, fit$cluster)
+
+```
+
+
+
