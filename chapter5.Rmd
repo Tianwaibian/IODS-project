@@ -1,0 +1,147 @@
+---
+title: "chapter5.Rmd"
+output: html_document
+---
+
+created at 6.12.2017
+@author: Zilan Wen
+
+# Chapter 5  Dimensionality reduction techniques
+
+## 1. Explore the ¡®human¡¯ data into R.
+
+```{r}
+getwd()
+setwd("D:/github/IODS-project/data")
+library(readr)
+human <- read.csv("http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/human2.txt")
+str(human)
+dim(human)
+```
+
+the human data has 155 observations with 8 variables.
+Edu2.FM    Edu2.F / Edu2.M    Edu2.M(or Edu2.F) = Proportion of females (males) with at least secondary education, 
+Labo.FM     Lab.F / Lab.M  Lab.F (or Lab.M) = Proportion of females (males) in the labour force
+Edu.Exp  Expected years of schooling  
+Life.Exp  Life expectancy at birth  
+GNI  Gross National Income per capita  
+Mat.Mor  Maternal mortality ratio  
+Ado.Birth  Adolescent birth rate  
+Parli.F  Percetange of female representatives in parliament  
+
+## 2.Show a graphical overview of the data
+
+* show summaries of the variable
+
+```{r}
+summary(human)
+```
+
+* visualize the 'human' variables
+```{r}
+library(GGally)
+library(corrplot)
+ggpairs(human)
+
+```
+
+* compute the correlation matrix and visualize it with corrplot
+
+```{r}
+library(dplyr)
+cor(human) %>% corrplot(type='upper', tl.pos = 'd')
+```
+
+From the picture, we can see that£º  
+1. Mat.Mor has negative relationships with Edu2.FM, Edu,Exp, Life.Exp.  
+2. Life.Exp is positively related to Edu.Exp.  
+3. Ado.Birth is positively corrected with Mat.Mor, but negatively related to Edu.Exp and Life.Exp.  
+
+## 3. PCA on the not standardized human data with the SVD method.  
+
+* perform principal component analysis (with the SVD method)
+
+```{r}
+pca_human <- prcomp(human)
+s = summary(pca_human)
+s
+```
+* draw a biplot of the principal component representation and the original variables
+```{r}
+pca_pr=round(100*s$importance[2,],digits=1)
+pc_lab=paste0(names(pca_pr),'(',pca_pr,'%)')
+biplot(pca_human, choices = 1:2, cex = c(0.8, 1), col = c("grey40", "deeppink2"))
+```
+  
+   The biplot figure with not standardized variable is not clear because the varialbes have different scales and are not compariable.
+
+## 4. PCA on standardized human data
+
+*  standardize the variables
+```{r}
+human_std <- scale(human)
+summary(human_std)
+pca_human_std <- prcomp(human_std)
+s1=summary(pca_human_std)
+s1
+pca_pr=round(100*s1$importance[2,],digits=1)
+pc_lab=paste0(names(pca_pr),'(',pca_pr,'%)')
+biplot(pca_human_std, choices = 1:2, cex = c(0.5, 0.8), col = c("black", "blue"), xlab=pc_lab[1], ylab=pc_lab[2])
+```
+      
+      
+      The PCA results on reginal data is diifferent on standerized data.  when the data is not Standardized, the values of GNI varible is very huge compared to others, so that the GNI is the only varible described in the biplot. However, the relationship can be achieved once the data scaled, we can see from the biplot for pca_human_std,    
+
+## 5. interpretations of PCA on the standardized human data   
+
+(1) Maternal mortality ratio is positively related to adolescent birth rate.
+(2) Expected years of schooling and life expectancy at birth have a positive correction withthe ratio of Female and Male populations with secondary education in each country.                
+(3) All varibles except Parli.F and Labo.FM have same direction with PC1 axis. the directons of Parli.F and Labo.FM are the same with PC2 
+
+## 6. tea dataset 
+
+* Load the tea dataset from the package Factominer.
+```{r}
+library(FactoMineR)
+data(tea)
+```
+* structure and the dimensions
+```{r}
+str(tea)
+dim(tea)
+```
+*  column names to keep in the dataset
+```{r}
+keep_columns <- c("Tea", "How", "how", "sugar", "where", "lunch")
+tea_time <- dplyr::select(tea, one_of(keep_columns))
+```
+
+* look at the summaries and structure of the data
+```{r}
+summary(tea_time)
+str(tea_time)
+```
+
+* visualize the dataset
+```{r}
+library(tidyr)
+library(ggplot2)
+gather(tea_time) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_bar() + theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8))
+```
+* multiple correspondence analysis
+```{r}
+mca <- MCA(tea_time, graph = FALSE)
+summary(mca)
+```
+* visualize MCA
+```{r}
+plot(mca, invisible=c("ind"), habillage = "quali")
+```
+
+The tea_time data show how people drink tea from 300 cases about how, How, lunch, suger, tea, where. In the biplot, each color represents a variable. From the plot, we can see:     
+
+(1) People are likely to a combination of milk, Earl Grey and sugar.
+(2) Tea bag and chain store have a close link.
+
+
+
