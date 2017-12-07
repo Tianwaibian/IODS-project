@@ -1,10 +1,9 @@
 ---
-title: "chapter.Rmd"
+title: "chapter5-2"
 author: "Zilan"
-date: "06,12,2017"
+date: "06, 12,2017"
 output: html_document
 ---
-
 # Chapter 5  Dimensionality reduction techniques
 
 ## 1. Explore the ¡®human¡¯ data into R.
@@ -87,15 +86,17 @@ pca_pr=round(100*s1$importance[2,],digits=1)
 pc_lab=paste0(names(pca_pr),'(',pca_pr,'%)')
 biplot(pca_human_std, choices = 1:2, cex = c(0.5, 0.8), col = c("black", "blue"), xlab=pc_lab[1], ylab=pc_lab[2])
 ```
+    
+The PCA results on reginal data is different on standerized data.  when the data is not Standardized, the values of GNI varible is very huge compared to others, so that the GNI is the only varible described in the biplot. However, the relationship can be achieved once the data scaled, we can see from the biplot for pca_human_std. 
       
-      
-      The PCA results on reginal data is diifferent on standerized data.  when the data is not Standardized, the values of GNI varible is very huge compared to others, so that the GNI is the only varible described in the biplot. However, the relationship can be achieved once the data scaled, we can see from the biplot for pca_human_std,    
 
 ## 5. interpretations of PCA on the standardized human data   
 
 (1) Maternal mortality ratio is positively related to adolescent birth rate.
 (2) Expected years of schooling and life expectancy at birth have a positive correction withthe ratio of Female and Male populations with secondary education in each country.                
 (3) All varibles except Parli.F and Labo.FM have same direction with PC1 axis. the directons of Parli.F and Labo.FM are the same with PC2 
+
+
 
 ## 6. tea dataset 
 
