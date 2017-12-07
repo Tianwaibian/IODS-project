@@ -1,10 +1,9 @@
 ---
-title: "chapter5.Rmd"
+title: "chapter.Rmd"
+author: "Zilan"
+date: "06,12,2017"
 output: html_document
 ---
-
-created at 6.12.2017
-@author: Zilan Wen
 
 # Chapter 5  Dimensionality reduction techniques
 
